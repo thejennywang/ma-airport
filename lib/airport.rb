@@ -4,11 +4,11 @@ class Airport
 	def initialize(capacity)
 		@planes ||= []
 		@capacity = capacity
-		@weather = "sunny"
+		# @weather = "sunny"
 	end
 
 	attr_reader :capacity 
-	attr_accessor :weather
+	# attr_accessor :weather
 
 	def land(plane)
 		raise "Plane cannot land in a storm. Please keep flying." if weather == "stormy"

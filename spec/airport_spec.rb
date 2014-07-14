@@ -5,7 +5,9 @@ describe Airport do
   let (:airport) { Airport.new(6) }
   let (:plane) 	 { Plane.new 			}
   let (:weather) { double :weather }
-  
+  before(:each) do
+    allow(airport).to receive(:weather).and_return "sunny"
+  end
   context 'taking off and landing' do
 
     it 'a plane can land' do
@@ -40,13 +42,14 @@ describe Airport do
 
       it 'a plane cannot take off when there is a storm brewing' do
       	plane.land
-      	airport.weather = "stormy"
+      	# airport.weather = "stormy"
+        expect(airport).to receive(:weather).and_return "stormy"
 	     	expect(lambda{airport.take_off(plane)}).to raise_error(RuntimeError)
 	     	expect(plane.status).to eq "landed"
       end
       
       it 'a plane cannot land in the middle of a storm' do
-      	airport.weather = "stormy"
+        expect(airport).to receive(:weather).and_return "stormy"
 	     	expect(lambda{airport.land(plane)}).to raise_error(RuntimeError)
 	     	expect(plane.status).to eq "flying"
       end

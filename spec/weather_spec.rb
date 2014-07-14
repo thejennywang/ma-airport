@@ -1,10 +1,10 @@
-require 'weather'
+# require 'weather'
 
-describe Weather do
+# describe Weather do
 
-	it 'is either sunny or stormy' do
-		allow(weather).to receive(:check).and_return { "sunny" }
-		allow(weather).to receive(:check).and_return { "stormy" }
-	end
+# 	it 'is either sunny or stormy' do
+# 		allow(weather).to receive(:good_weather?).and_return true
+# 	end
 
-end
+# end
+
