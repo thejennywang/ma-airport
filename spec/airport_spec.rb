@@ -4,10 +4,11 @@ require 'plane'
 describe Airport do
   let (:airport) { Airport.new(6) }
   let (:plane) 	 { Plane.new 			}
-  let (:weather) { double :weather }
+
   before(:each) do
-    allow(airport).to receive(:weather).and_return "sunny"
+    allow(airport).to receive(:good_weather?).and_return true
   end
+
   context 'taking off and landing' do
 
     it 'a plane can land' do
@@ -22,13 +23,14 @@ describe Airport do
   context 'traffic control' do
 
   	it 'knows if an airport is full' do
-  		airport.capacity.times {airport.land(plane)}
+      fill_in(airport)
   		expect(airport.full?).to eq true
   	end
 
     it 'a plane cannot land if the airport is full' do
-    	airport.capacity.times {airport.land(plane)}
-     	expect(lambda{airport.land(plane)}).to raise_error(RuntimeError) 
+      fill_in(airport)
+      # expect(self).to receive(:puts).with("The aiport is full. Keep on flying.")
+     	expect(airport.land(plane)).to eq "The aiport is full. Keep on flying."
     end
     
     # Include a weather condition using a module.
@@ -40,19 +42,68 @@ describe Airport do
     # the plane can not land, and must not be in the airport
     context 'weather conditions' do
 
+      before(:each) do
+        allow(airport).to receive(:good_weather?).and_return false
+      end
       it 'a plane cannot take off when there is a storm brewing' do
-      	plane.land
-      	# airport.weather = "stormy"
-        expect(airport).to receive(:weather).and_return "stormy"
-	     	expect(lambda{airport.take_off(plane)}).to raise_error(RuntimeError)
-	     	expect(plane.status).to eq "landed"
+      	plane.land_on(airport)
+	     	expect(airport.take_off(plane)).to eq "A storm is brewing. Please stay landed."
+	     	expect(plane.status).to eq :landed
       end
       
       it 'a plane cannot land in the middle of a storm' do
-        expect(airport).to receive(:weather).and_return "stormy"
-	     	expect(lambda{airport.land(plane)}).to raise_error(RuntimeError)
-	     	expect(plane.status).to eq "flying"
+	     	expect(airport.land(plane)).to eq "Plane cannot land in a storm. Please keep flying."
+	     	expect(plane.status).to eq :flying
       end
     end
   end
 end
+
+def fill_in(airport)
+    until airport.full?
+      airport.land(Plane.new)
+    end
+  end
+
+# grand final
+# Given 6 planes, each plane must land. When the airport is full, every plane must take off again.
+# Be careful of the weather, it could be stormy!
+# Check when all the planes have landed that they have the right status "landed"
+# Once all the planes are in the air again, check that they have the status of flying!
+describe "The grand finale (last spec)" do
+  it 'all planes can land' do
+    allow(STDOUT).to receive(:puts)
+    luton = Airport.new(100)
+    fill_in(luton)
+    expect(luton).to be_full
+  end
+
+
+
+  it 'all planes can take off' do
+    allow(STDOUT).to receive(:puts)
+    luton = Airport.new(100)
+    fill_in(luton)
+    expect(luton).to be_full
+    luton.take_off_all_planes
+    expect(luton.planes.count).to eq 0
+  end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
