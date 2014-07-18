@@ -1,25 +1,29 @@
 class Plane
 	
 	def initialize
-		@status = :flying
+		@flying = true
 	end
 
-	def status
-		@status
+	def flying?
+		@flying
 	end
 
-	def take_off_from(airport)
-		return "You cannot take off when already flying." if @status == :flying
-		@status = :flying
-		airport.take_off(self)
+	def land!
+		@flying = false
+		self
+	end
+
+	def take_off!
+		@flying = true
 		self
 	end
 
 	def land_on(airport)
-		return "You cannot land when you're already landed." if @status == :landed
-		@status = :landed
-		airport.land(self)
-		self
+		airport.clear_for_landing(self)
+	end
+
+	def take_off_from(airport)
+		airport.clear_for_take_off(self)
 	end
 
 end

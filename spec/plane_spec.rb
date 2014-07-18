@@ -3,32 +3,31 @@ require 'plane'
 describe Plane do
 
 	let(:plane) { Plane.new }
+  let(:grounded_plane) { plane.land! }
   let(:airport) {double :airport}
   
   it 'has a flying status when created' do
-  	expect(plane.status).to eq :flying
-  end
-
-  it 'can take off' do
-    plane.take_off_from(airport)
-    expect(plane.status).to eq :flying
+  	expect(plane).to be_flying
   end
 
   it 'can land' do
-    allow(airport).to receive(:land)
-    plane.land_on(airport)
-    expect(plane.status).to eq :landed
+    plane.land!
+    expect(plane).to_not be_flying
   end
 
-  it 'cannot take off when already flying' do
-    plane.take_off_from(airport)
-    expect(plane.take_off_from(airport)).to eq "You cannot take off when already flying."
+  it 'can take off' do
+    plane.land!
+    expect(plane.take_off!).to be_flying
   end
 
-  it 'cannot land when already landed' do
-    allow(airport).to receive(:land)
+  it 'can land on an airport' do
+    expect(airport).to receive(:clear_for_landing).with(plane)
     plane.land_on(airport)
-    expect(plane.land_on(airport)).to eq "You cannot land when you're already landed."
+  end
+
+  it 'can take off from an airport' do
+    expect(airport).to receive(:clear_for_take_off).with(plane)
+    plane.take_off_from(airport) 
   end
 
 end

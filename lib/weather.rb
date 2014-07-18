@@ -1,6 +1,7 @@
 module Weather
 
-	def good_weather?
+	def stormy?
 		 rand(2) >= 1		
 	end
+	
 end
