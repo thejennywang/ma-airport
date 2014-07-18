@@ -11,7 +11,7 @@ class Airport
 		@capacity = capacity
 	end
 
-	attr_accessor :capacity
+	attr_accessor :capacity, :planes
 
 	def has_planes?
 		@planes.any?
@@ -32,13 +32,11 @@ class Airport
 		@planes.count == capacity
 	end
 
-
-	# def take_off_all_planes
-	# 	while planes.any?
-	# 		planes.each do |plane|
-	# 			take_off(plane)
-	# 		end
-	# 	end
-	# end
+	def land_all(planes=[])
+		planes.each {|plane|
+			clear_for_landing(plane) until plane.flying? == false
+		}
+	end
+	
 
 end

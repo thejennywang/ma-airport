@@ -3,7 +3,6 @@ require 'plane'
 describe Plane do
 
 	let(:plane) { Plane.new }
-  let(:grounded_plane) { plane.land! }
   let(:airport) {double :airport}
   
   it 'has a flying status when created' do

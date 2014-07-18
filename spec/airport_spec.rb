@@ -1,42 +1,26 @@
 require 'airport'
+require 'plane'
 require 'weather'
 
 describe Airport do
-  let (:airport) { Airport.new }
-  let (:plane) { double :plane, land!: :plane, take_off!: :plane}
-  let(:extra_plane) {double :plane}
 
-  context 'traffic control' do
+  let(:airport)     { Airport.new                                    }
+  let(:plane)       { double :plane, land!: :plane, take_off!: :plane}
+  let(:extra_plane) { double :plane                                  }
 
-    before(:each) do
-      allow(airport).to receive(:stormy?).and_return false
-    end
-
-    it 'has no planes' do
-      expect(Airport.new).not_to have_planes
-    end
-
-    it 'knows when an airport is full' do
-      (airport.capacity).times{airport.clear_for_landing(plane)}
-      expect(airport.full?).to eq true
-    end
-
-    it 'returns an error if the airport is full' do
-      (airport.capacity).times{airport.clear_for_landing(plane)}
-      expect(airport.clear_for_landing(extra_plane)).to eq "The airport is full. Keep on flying."
-    end
-
+  it 'starts off with no planes' do
+    expect(airport).not_to have_planes
   end
-  
+
+  it 'can have planes' do
+    airport = Airport.new([:plane])
+    expect(airport).to have_planes
+  end
+
   context 'taking off and landing' do
 
     before(:each) do
         allow(airport).to receive(:stormy?).and_return false
-    end
-
-    it 'can have planes' do
-      airport = Airport.new([:plane])
-      expect(airport).to have_planes
     end
 
     it 'can clear a plane for landing' do
@@ -64,6 +48,24 @@ describe Airport do
     end
   end
 
+  context 'traffic control' do
+
+    before(:each) do
+      allow(airport).to receive(:stormy?).and_return false
+    end
+
+    it 'knows when an airport is full' do
+      (airport.capacity).times{airport.clear_for_landing(plane)}
+      expect(airport.full?).to eq true
+    end
+
+    it 'returns an error if the airport is full' do
+      (airport.capacity).times{airport.clear_for_landing(plane)}
+      expect(airport.clear_for_landing(extra_plane)).to eq "The airport is full. Keep on flying."
+    end
+
+  end
+  
   context 'weather conditions' do
 
     before(:each) do
@@ -83,26 +85,19 @@ describe Airport do
 
 end
 
-# describe "The grand finale (last spec)" do
+describe "The grand finale (last spec)" do
 
-#   let (:plane) { double :plane, land!: :plane, take_off!: :plane}
+  let (:plane) { double :plane, land!: :plane, take_off!: :plane}
 
-#   it 'all planes can land' do
-#     allow(airport).to receive(:stormy?).and_return false
-#     allow(STDOUT).to receive(:puts)
-#     luton = Airport.new
-#     (luton.capacity).times{luton.clear_for_landing(plane)}
-#     expect(luton.full?).to eq true
-#   end
-# end
+  it 'all planes can land' do
+    airport = Airport.new
+    plane1 = Plane.new
+    plane2 = Plane.new
+    flying_planes = [plane1, plane2]
 
+    airport.land_all(flying_planes)
 
-#   it 'all planes can take off' do
-#     allow(STDOUT).to receive(:puts)
-#     luton = Airport.new(100)
-#     fill_in(luton)
-#     expect(luton).to be_full
-#     luton.release_all_planes
-#     expect(luton.planes.count).to eq 0
-#   end
-# end
+    expect(airport.planes).to eq [plane1, plane2]
+  end
+
+end
