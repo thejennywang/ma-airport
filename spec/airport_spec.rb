@@ -4,9 +4,10 @@ require 'weather'
 
 describe Airport do
 
-  let(:airport)     { Airport.new                                    }
-  let(:plane)       { double :plane, land!: :plane, take_off!: :plane}
-  let(:extra_plane) { double :plane                                  }
+  let(:airport)           { Airport.new                                     }
+  let(:plane)             { double :plane, land!: :plane, take_off!: :planes}
+  let(:extra_plane)       { double :plane                                   }  
+  let(:airport_with_plane){ Airport.new([plane])                            }                           
 
   it 'starts off with no planes' do
     expect(airport).not_to have_planes
@@ -40,7 +41,6 @@ describe Airport do
     end
 
     it 'has no planes after a plane took off' do
-      airport_with_plane = Airport.new([plane])
       allow(airport_with_plane).to receive(:stormy?).and_return false
       allow(plane).to receive(:take_off!).and_return(plane)
       airport_with_plane.clear_for_take_off(plane)
